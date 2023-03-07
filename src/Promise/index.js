@@ -1,6 +1,6 @@
 class _Promise {
   constructor() {}
-  all(arr) {
+  static all(arr) {
     return new Promise((resolve, reject) => {
       const l = arr.length
       const result_arr = []
@@ -20,4 +20,4 @@ class _Promise {
   }
 }
 
-module.exports = _Promise
+export default _Promise
