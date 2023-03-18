@@ -12,7 +12,7 @@ class _Promise {
 
     this.then = (fun) => {
       if (this.status === 'fulfilled') {
-        fun(this.resolve_value)
+        this.resolve_value = fun(this.resolve_value)
       } else {
         this.then_fun.push(fun)
       }
@@ -42,14 +42,17 @@ class _Promise {
       while (this.then_fun.length) {
         this.resolve_value = this.then_fun.shift()(this.resolve_value)
       }
+
       while (this.finally_fun.length) {
         this.finally_fun.shift()()
       }
     }
     let rejected = () => {
       this.status = 'rejected'
-      this.catch_fun(this.reject_value)
-      this.catch_fun = undefined
+      if (this.catch_fun) {
+        this.catch_fun(this.reject_value)
+        this.catch_fun = undefined
+      }
 
       while (this.finally_fun.length) {
         this.finally_fun.shift()()
@@ -61,13 +64,13 @@ class _Promise {
       // 模拟微任务Promise.resolve()的效果
       setTimeout(() => {
         fulfilled()
-      }, 50)
+      }, 10)
     }
     let reject = (e) => {
       this.reject_value = e
       setTimeout(() => {
         rejected()
-      }, 50)
+      }, 10)
     }
 
     cb(resolve, reject)

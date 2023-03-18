@@ -1,4 +1,4 @@
-import { expect, test, describe, beforeEach, afterEach } from 'vitest'
+import { expect, test, describe, beforeEach, afterEach, wait } from 'vitest'
 import _Promise from '../index.js'
 
 describe('Promise的构造函数', () => {
@@ -54,6 +54,49 @@ describe('Promise的构造函数', () => {
       .finally((e) => {
         expect(e).toBe(undefined)
       })
+  })
+
+  test('promise实例状态改变后，再添加的then,catch,finally方法', async () => {
+    let p = new _Promise((rep, rej) => {
+      setTimeout(() => {
+        rep('p')
+      }, 10)
+    })
+    let j = new _Promise((rep, rej) => {
+      setTimeout(() => {
+        rej('j')
+      }, 100)
+    })
+
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        p.then((res) => {
+          expect(res).toBe('p')
+          return 'pp'
+        })
+          .then((res) => {
+            expect(res).toBe('pp')
+          })
+          .finally((v) => {
+            expect(v).toBe(undefined)
+          })
+
+        j.then((res) => {
+          expect(res).toBe('j')
+          return 'jj'
+        })
+          .catch((res) => {
+            expect(res).toBe('j')
+          })
+          .finally((v) => {
+            expect(v).toBe(undefined)
+          })
+          .finally((v) => {
+            expect(v).toBe(undefined)
+          })
+        resolve()
+      }, 1000)
+    })
   })
 })
 
