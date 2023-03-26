@@ -8,4 +8,5 @@
 | shallowClone | 浅克隆 |
 | debounce | 防抖函数 |
 | throttle | 节流函数 |
+| asyncPool | 异步任务并发量 |
 
